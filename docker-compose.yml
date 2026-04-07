@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: xianyu-assistant
     ports:
-      - "8080:8080"
+      - "12400:12400"
     volumes:
       # 持久化数据库文件
       - ./data:/app/data
@@ -21,7 +21,7 @@ services:
     networks:
       - xianyu-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:12400/"]
       interval: 30s
       timeout: 10s
       retries: 3

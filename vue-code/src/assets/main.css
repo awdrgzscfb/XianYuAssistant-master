@@ -1,0 +1,11 @@
+@import './base.css';
+
+a {
+  text-decoration: none;
+  color: #409eff;
+  transition: 0.3s;
+}
+
+a:hover {
+  color: #66b1ff;
+}

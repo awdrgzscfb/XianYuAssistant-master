@@ -1,0 +1,251 @@
+.dashboard-page {
+  padding: 20px;
+  background: #f5f7fa;
+}
+
+/* 统计卡片 */
+.stats-row {
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  transition: all 0.3s;
+  border-radius: 12px;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.stat-content {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-right: 20px;
+}
+
+.account-icon {
+  background: #409eff;
+}
+
+.goods-icon {
+  background: #67c23a;
+}
+
+.online-icon {
+  background: #e6a23c;
+}
+
+.stat-info {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #303133;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #909399;
+}
+
+/* 卡片头部 */
+.card-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.card-subtitle {
+  font-size: 14px;
+  color: #909399;
+  margin-top: 4px;
+}
+
+/* 快速开始指南 */
+.guide-card {
+  margin-bottom: 20px;
+  border-radius: 12px;
+}
+
+.steps-container {
+  margin: 30px 0;
+}
+
+.steps-content {
+  margin-top: 30px;
+}
+
+.step-card {
+  height: 100%;
+  border-radius: 12px;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #409eff;
+}
+
+.step-card.active {
+  border-color: #409eff;
+  background: #ecf5ff;
+}
+
+.step-icon {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+.step-description {
+  font-size: 14px;
+  color: #606266;
+  text-align: center;
+  margin: 0 0 16px 0;
+  line-height: 1.6;
+}
+
+.step-details {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.step-details li {
+  font-size: 13px;
+  color: #909399;
+  padding: 6px 0;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 20px;
+}
+
+.step-details li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #409eff;
+}
+
+.step-button {
+  width: 100%;
+}
+
+/* 功能特性 */
+.features-card {
+  margin-bottom: 20px;
+  border-radius: 12px;
+}
+
+.feature-card {
+  height: 100%;
+  border-radius: 12px;
+  transition: all 0.3s;
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.feature-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+  margin: 0 0 12px 0;
+}
+
+.feature-description {
+  font-size: 14px;
+  color: #606266;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 常见问题 */
+.faq-card {
+  margin-bottom: 20px;
+  border-radius: 12px;
+}
+
+.faq-question {
+  font-size: 15px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.faq-answer {
+  font-size: 14px;
+  color: #606266;
+  line-height: 1.8;
+  padding: 12px 20px;
+  background: #f5f7fa;
+  border-radius: 8px;
+}
+
+/* 底部提示 */
+.tips-card {
+  border-radius: 12px;
+}
+
+.tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+
+.tips-list li {
+  font-size: 14px;
+  color: #606266;
+  padding: 6px 0;
+  line-height: 1.8;
+  position: relative;
+  padding-left: 20px;
+}
+
+.tips-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #409eff;
+  font-weight: bold;
+}

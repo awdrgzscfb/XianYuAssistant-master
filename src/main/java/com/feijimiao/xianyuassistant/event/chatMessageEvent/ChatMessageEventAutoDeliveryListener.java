@@ -58,11 +58,12 @@ public class ChatMessageEventAutoDeliveryListener {
                 message.getMsgContent(), message.getXyGoodsId(), message.getSId(), message.getOrderId());
 
         try {
-            if (message.getContentType() == null || message.getContentType() != 32) {
+            if (message.getContentType() == null ||
+                    (message.getContentType() != 26 && message.getContentType() != 32)) {
                 return;
             }
 
-            if (message.getMsgContent() == null || !message.getMsgContent().contains("[已付款，待发货]")) {
+            if (!isAutoDeliveryTriggerMessage(message.getMsgContent())) {
                 return;
             }
 
@@ -227,5 +228,15 @@ public class ChatMessageEventAutoDeliveryListener {
         } catch (Exception e) {
             log.error("更新发货记录状态和内容失败: recordId={}, state={}, content={}", recordId, state, content, e);
         }
+    }
+
+    private boolean isAutoDeliveryTriggerMessage(String msgContent) {
+        if (msgContent == null || msgContent.isEmpty()) {
+            return false;
+        }
+
+        return msgContent.contains("[已付款，待发货]")
+                || msgContent.contains("[我已付款，等待你发货]")
+                || (msgContent.contains("已付款") && msgContent.contains("等待你发货"));
     }
 }

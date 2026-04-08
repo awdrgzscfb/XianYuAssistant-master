@@ -1,21 +1,21 @@
 package com.feijimiao.xianyuassistant.service.impl;
 
 import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryInventoryImportReqDTO;
+import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryInventoryItemRespDTO;
 import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryInventorySummaryRespDTO;
 import com.feijimiao.xianyuassistant.entity.XianyuGoodsAutoDeliveryItem;
 import com.feijimiao.xianyuassistant.mapper.XianyuGoodsAutoDeliveryItemMapper;
 import com.feijimiao.xianyuassistant.service.AutoDeliveryInventoryService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * 自动发货库存服务实现
- */
 @Slf4j
 @Service
 public class AutoDeliveryInventoryServiceImpl implements AutoDeliveryInventoryService {
@@ -67,6 +67,43 @@ public class AutoDeliveryInventoryServiceImpl implements AutoDeliveryInventorySe
     }
 
     @Override
+    public List<AutoDeliveryInventoryItemRespDTO> getInventoryItems(Long accountId, String xyGoodsId) {
+        return itemMapper.selectByAccountAndGoodsId(accountId, xyGoodsId)
+                .stream()
+                .map(this::toRespDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public AutoDeliveryInventoryItemRespDTO updatePendingItem(Long accountId, String xyGoodsId, Long itemId, String deliveryContent) {
+        String trimmedContent = deliveryContent == null ? "" : deliveryContent.trim();
+        if (trimmedContent.isEmpty()) {
+            throw new IllegalArgumentException("发货内容不能为空");
+        }
+
+        int updated = itemMapper.updatePendingItemContent(accountId, xyGoodsId, itemId, trimmedContent);
+        if (updated <= 0) {
+            throw new IllegalStateException("仅待发状态的库存项支持修改");
+        }
+
+        XianyuGoodsAutoDeliveryItem item = itemMapper.selectById(itemId);
+        if (item == null) {
+            throw new IllegalStateException("库存项不存在");
+        }
+        return toRespDTO(item);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deletePendingItem(Long accountId, String xyGoodsId, Long itemId) {
+        int deleted = itemMapper.deletePendingItem(accountId, xyGoodsId, itemId);
+        if (deleted <= 0) {
+            throw new IllegalStateException("仅待发状态的库存项支持删除");
+        }
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public XianyuGoodsAutoDeliveryItem reserveNextItem(Long accountId,
                                                        Long xianyuGoodsId,
@@ -113,6 +150,12 @@ public class AutoDeliveryInventoryServiceImpl implements AutoDeliveryInventorySe
             return;
         }
         itemMapper.releaseReservedItem(itemId);
+    }
+
+    private AutoDeliveryInventoryItemRespDTO toRespDTO(XianyuGoodsAutoDeliveryItem item) {
+        AutoDeliveryInventoryItemRespDTO respDTO = new AutoDeliveryInventoryItemRespDTO();
+        BeanUtils.copyProperties(item, respDTO);
+        return respDTO;
     }
 
     private List<String> parseLines(String deliveryItemsText) {

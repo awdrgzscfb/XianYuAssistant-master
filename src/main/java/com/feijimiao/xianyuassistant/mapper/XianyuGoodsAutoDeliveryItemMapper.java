@@ -11,9 +11,6 @@ import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
-/**
- * 自动发货库存明细 Mapper
- */
 @Mapper
 public interface XianyuGoodsAutoDeliveryItemMapper extends BaseMapper<XianyuGoodsAutoDeliveryItem> {
 
@@ -43,6 +40,12 @@ public interface XianyuGoodsAutoDeliveryItemMapper extends BaseMapper<XianyuGood
     @Select("SELECT * FROM xianyu_goods_auto_delivery_item WHERE xianyu_account_id = #{accountId} AND xy_goods_id = #{xyGoodsId} AND state = 0 ORDER BY id ASC LIMIT 1")
     XianyuGoodsAutoDeliveryItem selectNextPendingItem(@Param("accountId") Long accountId, @Param("xyGoodsId") String xyGoodsId);
 
+    @Select("SELECT * FROM xianyu_goods_auto_delivery_item " +
+            "WHERE xianyu_account_id = #{accountId} AND xy_goods_id = #{xyGoodsId} " +
+            "ORDER BY CASE state WHEN 0 THEN 0 WHEN 2 THEN 1 ELSE 2 END, id ASC")
+    List<XianyuGoodsAutoDeliveryItem> selectByAccountAndGoodsId(@Param("accountId") Long accountId,
+                                                                @Param("xyGoodsId") String xyGoodsId);
+
     @Update("UPDATE xianyu_goods_auto_delivery_item " +
             "SET state = 2, order_id = #{orderId}, record_id = #{recordId}, buyer_user_id = #{buyerUserId}, buyer_user_name = #{buyerUserName}, reserved_time = datetime('now') " +
             "WHERE id = #{id} AND state = 0")
@@ -56,7 +59,21 @@ public interface XianyuGoodsAutoDeliveryItemMapper extends BaseMapper<XianyuGood
     int markItemUsed(@Param("id") Long id);
 
     @Update("UPDATE xianyu_goods_auto_delivery_item " +
+            "SET delivery_content = #{deliveryContent} " +
+            "WHERE id = #{id} AND xianyu_account_id = #{accountId} AND xy_goods_id = #{xyGoodsId} AND state = 0")
+    int updatePendingItemContent(@Param("accountId") Long accountId,
+                                 @Param("xyGoodsId") String xyGoodsId,
+                                 @Param("id") Long id,
+                                 @Param("deliveryContent") String deliveryContent);
+
+    @Update("UPDATE xianyu_goods_auto_delivery_item " +
             "SET state = 0, order_id = NULL, record_id = NULL, buyer_user_id = NULL, buyer_user_name = NULL, reserved_time = NULL " +
             "WHERE id = #{id} AND state = 2")
     int releaseReservedItem(@Param("id") Long id);
+
+    @Delete("DELETE FROM xianyu_goods_auto_delivery_item " +
+            "WHERE id = #{id} AND xianyu_account_id = #{accountId} AND xy_goods_id = #{xyGoodsId} AND state = 0")
+    int deletePendingItem(@Param("accountId") Long accountId,
+                          @Param("xyGoodsId") String xyGoodsId,
+                          @Param("id") Long id);
 }

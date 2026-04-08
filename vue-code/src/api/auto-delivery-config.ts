@@ -3,7 +3,7 @@ import { request } from '@/utils/request';
 export interface AutoDeliveryConfig {
   id: number;
   xianyuAccountId: number;
-  xianyuGoodsId: number;
+  xianyuGoodsId?: number;
   xyGoodsId: string;
   type: number;
   autoDeliveryContent: string;
@@ -48,6 +48,35 @@ export interface AutoDeliveryInventorySummary {
   importedCount: number;
 }
 
+export interface AutoDeliveryInventoryItem {
+  id: number;
+  xianyuAccountId: number;
+  xianyuGoodsId?: number;
+  xyGoodsId: string;
+  deliveryContent: string;
+  state: number;
+  orderId?: string;
+  recordId?: number;
+  buyerUserId?: string;
+  buyerUserName?: string;
+  reservedTime?: string;
+  usedTime?: string;
+  createTime?: string;
+}
+
+export interface AutoDeliveryInventoryItemUpdateReq {
+  xianyuAccountId: number;
+  xyGoodsId: string;
+  itemId: number;
+  deliveryContent: string;
+}
+
+export interface AutoDeliveryInventoryItemDeleteReq {
+  xianyuAccountId: number;
+  xyGoodsId: string;
+  itemId: number;
+}
+
 export function saveOrUpdateAutoDeliveryConfig(data: SaveAutoDeliveryConfigReq) {
   return request<AutoDeliveryConfig>({
     url: '/auto-delivery-config/save',
@@ -80,6 +109,30 @@ export function getAutoDeliveryInventorySummary(data: GetAutoDeliveryConfigReq) 
   });
 }
 
+export function getAutoDeliveryInventoryItems(data: GetAutoDeliveryConfigReq) {
+  return request<AutoDeliveryInventoryItem[]>({
+    url: '/auto-delivery-config/inventory/items',
+    method: 'POST',
+    data
+  });
+}
+
+export function updateAutoDeliveryInventoryItem(data: AutoDeliveryInventoryItemUpdateReq) {
+  return request<AutoDeliveryInventoryItem>({
+    url: '/auto-delivery-config/inventory/item/update',
+    method: 'POST',
+    data
+  });
+}
+
+export function deleteAutoDeliveryInventoryItem(data: AutoDeliveryInventoryItemDeleteReq) {
+  return request<void>({
+    url: '/auto-delivery-config/inventory/item/delete',
+    method: 'POST',
+    data
+  });
+}
+
 export function getAutoDeliveryConfigsByAccountId(xianyuAccountId: number) {
   return request<AutoDeliveryConfig[]>({
     url: '/auto-delivery-config/list',
@@ -89,7 +142,7 @@ export function getAutoDeliveryConfigsByAccountId(xianyuAccountId: number) {
 }
 
 export function deleteAutoDeliveryConfig(xianyuAccountId: number, xyGoodsId: string) {
-  return request({
+  return request<void>({
     url: '/auto-delivery-config/delete',
     method: 'POST',
     params: { xianyuAccountId, xyGoodsId }

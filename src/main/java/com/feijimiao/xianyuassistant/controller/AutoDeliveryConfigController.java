@@ -5,6 +5,9 @@ import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryConfigQueryReqDT
 import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryConfigReqDTO;
 import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryConfigRespDTO;
 import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryInventoryImportReqDTO;
+import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryInventoryItemDeleteReqDTO;
+import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryInventoryItemRespDTO;
+import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryInventoryItemUpdateReqDTO;
 import com.feijimiao.xianyuassistant.controller.dto.AutoDeliveryInventorySummaryRespDTO;
 import com.feijimiao.xianyuassistant.service.AutoDeliveryConfigService;
 import jakarta.validation.Valid;
@@ -19,9 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * 自动发货配置控制器
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/auto-delivery-config")
@@ -76,6 +76,42 @@ public class AutoDeliveryConfigController {
         } catch (Exception e) {
             log.error("查询自动发货库存汇总失败", e);
             return ResultObject.failed("查询自动发货库存汇总失败: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/inventory/items")
+    public ResultObject<List<AutoDeliveryInventoryItemRespDTO>> getInventoryItems(@Valid @RequestBody AutoDeliveryConfigQueryReqDTO reqDTO) {
+        try {
+            log.info("查询自动发货库存明细请求: xianyuAccountId={}, xyGoodsId={}",
+                    reqDTO.getXianyuAccountId(), reqDTO.getXyGoodsId());
+            return autoDeliveryConfigService.getInventoryItems(reqDTO);
+        } catch (Exception e) {
+            log.error("查询自动发货库存明细失败", e);
+            return ResultObject.failed("查询自动发货库存明细失败: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/inventory/item/update")
+    public ResultObject<AutoDeliveryInventoryItemRespDTO> updateInventoryItem(@Valid @RequestBody AutoDeliveryInventoryItemUpdateReqDTO reqDTO) {
+        try {
+            log.info("修改自动发货库存请求: xianyuAccountId={}, xyGoodsId={}, itemId={}",
+                    reqDTO.getXianyuAccountId(), reqDTO.getXyGoodsId(), reqDTO.getItemId());
+            return autoDeliveryConfigService.updateInventoryItem(reqDTO);
+        } catch (Exception e) {
+            log.error("修改自动发货库存失败", e);
+            return ResultObject.failed("修改自动发货库存失败: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/inventory/item/delete")
+    public ResultObject<Void> deleteInventoryItem(@Valid @RequestBody AutoDeliveryInventoryItemDeleteReqDTO reqDTO) {
+        try {
+            log.info("删除自动发货库存请求: xianyuAccountId={}, xyGoodsId={}, itemId={}",
+                    reqDTO.getXianyuAccountId(), reqDTO.getXyGoodsId(), reqDTO.getItemId());
+            return autoDeliveryConfigService.deleteInventoryItem(reqDTO);
+        } catch (Exception e) {
+            log.error("删除自动发货库存失败", e);
+            return ResultObject.failed("删除自动发货库存失败: " + e.getMessage());
         }
     }
 

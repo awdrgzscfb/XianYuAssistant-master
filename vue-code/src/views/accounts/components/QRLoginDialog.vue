@@ -90,7 +90,7 @@ const handleLoginSuccess = async () => {
     if (cookieRes.code === 0 || cookieRes.code === 200) {
       const cookies = cookieRes.data?.cookies || {}
       const unb = cookies.unb || ''
-      const cookieText = Object.entries(cookies)
+      const cookie = Object.entries(cookies)
         .map(([key, value]) => `${key}=${value}`)
         .join('; ')
       
@@ -99,7 +99,7 @@ const handleLoginSuccess = async () => {
       const addRes = await addAccount({
         accountNote,
         unb,
-        cookieText
+        cookie
       } as any)
       
       if (addRes.code === 0 || addRes.code === 200) {

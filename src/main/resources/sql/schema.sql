@@ -178,6 +178,30 @@ BEGIN
 END
 $
 
+-- 商品自动发货库存表
+CREATE TABLE IF NOT EXISTS xianyu_goods_auto_delivery_item (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    xianyu_account_id BIGINT NOT NULL,                -- 闲鱼账号ID
+    xianyu_goods_id BIGINT,                           -- 本地商品ID
+    xy_goods_id VARCHAR(100) NOT NULL,                -- 闲鱼商品ID
+    delivery_content TEXT NOT NULL,                   -- 实际发货内容，一行一条
+    state TINYINT DEFAULT 0,                          -- 0-待使用 1-已使用 2-预占中
+    order_id VARCHAR(100),                            -- 关联订单ID
+    record_id BIGINT,                                 -- 关联发货记录ID
+    buyer_user_id VARCHAR(100),                       -- 买家用户ID
+    buyer_user_name VARCHAR(100),                     -- 买家用户名
+    reserved_time DATETIME,                           -- 预占时间
+    used_time DATETIME,                               -- 实际使用时间
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,   -- 导入时间
+    FOREIGN KEY (xianyu_account_id) REFERENCES xianyu_account(id)
+);
+
+-- 创建自动发货库存表索引
+CREATE INDEX IF NOT EXISTS idx_auto_delivery_item_account_id ON xianyu_goods_auto_delivery_item(xianyu_account_id);
+CREATE INDEX IF NOT EXISTS idx_auto_delivery_item_xy_goods_id ON xianyu_goods_auto_delivery_item(xy_goods_id);
+CREATE INDEX IF NOT EXISTS idx_auto_delivery_item_state ON xianyu_goods_auto_delivery_item(state);
+CREATE INDEX IF NOT EXISTS idx_auto_delivery_item_record_id ON xianyu_goods_auto_delivery_item(record_id);
+
 -- 商品自动发货记录表
 CREATE TABLE IF NOT EXISTS xianyu_goods_auto_delivery_record (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

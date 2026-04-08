@@ -1,36 +1,53 @@
 import { request } from '@/utils/request';
-import type { ApiResponse } from '@/types';
 
-// 自动发货配置
 export interface AutoDeliveryConfig {
   id: number;
   xianyuAccountId: number;
   xianyuGoodsId: number;
   xyGoodsId: string;
-  type: number; // 1-文本，2-自定义
+  type: number;
   autoDeliveryContent: string;
-  autoConfirmShipment?: number; // 自动确认发货开关：0-关闭，1-开启
+  autoConfirmShipment?: number;
+  totalItemCount?: number;
+  pendingItemCount?: number;
+  usedItemCount?: number;
+  reservedItemCount?: number;
   createTime: string;
   updateTime: string;
 }
 
-// 保存配置请求
 export interface SaveAutoDeliveryConfigReq {
   xianyuAccountId: number;
   xianyuGoodsId?: number;
   xyGoodsId: string;
   type: number;
   autoDeliveryContent: string;
-  autoConfirmShipment?: number; // 自动确认发货开关：0-关闭，1-开启
+  autoConfirmShipment?: number;
 }
 
-// 查询配置请求
 export interface GetAutoDeliveryConfigReq {
   xianyuAccountId: number;
   xyGoodsId?: string;
 }
 
-// 保存或更新自动发货配置
+export interface AutoDeliveryInventoryImportReq {
+  xianyuAccountId: number;
+  xianyuGoodsId?: number;
+  xyGoodsId: string;
+  deliveryItemsText: string;
+  replacePendingItems?: boolean;
+}
+
+export interface AutoDeliveryInventorySummary {
+  xianyuAccountId: number;
+  xyGoodsId: string;
+  totalCount: number;
+  pendingCount: number;
+  usedCount: number;
+  reservedCount: number;
+  importedCount: number;
+}
+
 export function saveOrUpdateAutoDeliveryConfig(data: SaveAutoDeliveryConfigReq) {
   return request<AutoDeliveryConfig>({
     url: '/auto-delivery-config/save',
@@ -39,7 +56,6 @@ export function saveOrUpdateAutoDeliveryConfig(data: SaveAutoDeliveryConfigReq) 
   });
 }
 
-// 查询自动发货配置
 export function getAutoDeliveryConfig(data: GetAutoDeliveryConfigReq) {
   return request<AutoDeliveryConfig>({
     url: '/auto-delivery-config/get',
@@ -48,7 +64,22 @@ export function getAutoDeliveryConfig(data: GetAutoDeliveryConfigReq) {
   });
 }
 
-// 根据账号ID查询所有配置
+export function importAutoDeliveryInventory(data: AutoDeliveryInventoryImportReq) {
+  return request<AutoDeliveryInventorySummary>({
+    url: '/auto-delivery-config/inventory/import',
+    method: 'POST',
+    data
+  });
+}
+
+export function getAutoDeliveryInventorySummary(data: GetAutoDeliveryConfigReq) {
+  return request<AutoDeliveryInventorySummary>({
+    url: '/auto-delivery-config/inventory/summary',
+    method: 'POST',
+    data
+  });
+}
+
 export function getAutoDeliveryConfigsByAccountId(xianyuAccountId: number) {
   return request<AutoDeliveryConfig[]>({
     url: '/auto-delivery-config/list',
@@ -57,7 +88,6 @@ export function getAutoDeliveryConfigsByAccountId(xianyuAccountId: number) {
   });
 }
 
-// 删除自动发货配置
 export function deleteAutoDeliveryConfig(xianyuAccountId: number, xyGoodsId: string) {
   return request({
     url: '/auto-delivery-config/delete',

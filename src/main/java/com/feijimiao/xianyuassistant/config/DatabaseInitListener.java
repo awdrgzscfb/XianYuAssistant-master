@@ -185,6 +185,25 @@ public class DatabaseInitListener implements ApplicationListener<ApplicationRead
             "update_time DATETIME DEFAULT CURRENT_TIMESTAMP, " +
             "FOREIGN KEY (xianyu_account_id) REFERENCES xianyu_account(id)" +
             ")");
+
+        // 商品自动发货库存表
+        requiredTables.put("xianyu_goods_auto_delivery_item",
+            "CREATE TABLE xianyu_goods_auto_delivery_item (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "xianyu_account_id BIGINT NOT NULL, " +
+            "xianyu_goods_id BIGINT, " +
+            "xy_goods_id VARCHAR(100) NOT NULL, " +
+            "delivery_content TEXT NOT NULL, " +
+            "state TINYINT DEFAULT 0, " +
+            "order_id VARCHAR(100), " +
+            "record_id BIGINT, " +
+            "buyer_user_id VARCHAR(100), " +
+            "buyer_user_name VARCHAR(100), " +
+            "reserved_time DATETIME, " +
+            "used_time DATETIME, " +
+            "create_time DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+            "FOREIGN KEY (xianyu_account_id) REFERENCES xianyu_account(id)" +
+            ")");
         
         // 商品自动发货记录表
         requiredTables.put("xianyu_goods_auto_delivery_record",
@@ -420,6 +439,16 @@ public class DatabaseInitListener implements ApplicationListener<ApplicationRead
             "CREATE INDEX IF NOT EXISTS idx_auto_delivery_config_xy_goods_id ON xianyu_goods_auto_delivery_config(xy_goods_id)");
         requiredIndexes.put("idx_auto_delivery_config_unique",
             "CREATE UNIQUE INDEX IF NOT EXISTS idx_auto_delivery_config_unique ON xianyu_goods_auto_delivery_config(xianyu_account_id, xy_goods_id)");
+
+        // 自动发货库存表索引
+        requiredIndexes.put("idx_auto_delivery_item_account_id",
+            "CREATE INDEX IF NOT EXISTS idx_auto_delivery_item_account_id ON xianyu_goods_auto_delivery_item(xianyu_account_id)");
+        requiredIndexes.put("idx_auto_delivery_item_xy_goods_id",
+            "CREATE INDEX IF NOT EXISTS idx_auto_delivery_item_xy_goods_id ON xianyu_goods_auto_delivery_item(xy_goods_id)");
+        requiredIndexes.put("idx_auto_delivery_item_state",
+            "CREATE INDEX IF NOT EXISTS idx_auto_delivery_item_state ON xianyu_goods_auto_delivery_item(state)");
+        requiredIndexes.put("idx_auto_delivery_item_record_id",
+            "CREATE INDEX IF NOT EXISTS idx_auto_delivery_item_record_id ON xianyu_goods_auto_delivery_item(record_id)");
         
         // 自动发货记录表索引
         requiredIndexes.put("idx_auto_delivery_record_account_id",
